@@ -95,5 +95,9 @@ abstract contract ERC1155Lazy is IERC1155LazyMint, ERC1155BaseURI, Mint1155Valid
     function getCreators(uint256 _id) external view returns (LibPart.Part[] memory) {
         return creators[_id];
     }
+
+    function _getSupply(uint tokenId) internal view returns (uint) {
+        return supply[tokenId];
+    }
     uint256[50] private __gap;
 }
