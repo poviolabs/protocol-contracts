@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity >=0.6.9 <0.8.0;
+pragma solidity 0.7.6;
 
 import "./interfaces/ERC1271.sol";
 import "./LibOrder.sol";
@@ -25,16 +25,15 @@ abstract contract OrderValidator is Initializable, ContextUpgradeable, EIP712Upg
         } else {
             if (_msgSender() != order.maker) {
                 bytes32 hash = LibOrder.hash(order);
-                if (order.maker.isContract()) {
-                    require(
-                        ERC1271(order.maker).isValidSignature(_hashTypedDataV4(hash), signature) == MAGICVALUE,
-                        "contract order signature verification error"
-                    );
-                } else {
-                    require(
-                        _hashTypedDataV4(hash).recover(signature) == order.maker,
-                        "order signature verification error"
-                    );
+                if (_hashTypedDataV4(hash).recover(signature) != order.maker) {
+                    if (order.maker.isContract()) {
+                        require(
+                            ERC1271(order.maker).isValidSignature(_hashTypedDataV4(hash), signature) == MAGICVALUE,
+                            "contract order signature verification error"
+                        );
+                    } else {
+                        revert("order signature verification error");
+                    }
                 }
             }
         }
