@@ -27,10 +27,10 @@ contract Staking is StakingBase, StakingRestake {
         emit StartMigration(msg.sender, to);
     }
 
-    function stake(address account, address delegate, uint amount, uint slope, uint cliff) external notStopped returns (uint) {
+    function stake(address account, address delegate, uint amount, uint slope, uint cliff) external notStopped notMigrating returns (uint) {
         require(amount > 0, "zero amount");
         require(cliff <= TWO_YEAR_WEEKS, "cliff too big");
-        require(amount.div(slope) <= TWO_YEAR_WEEKS, "period too big");
+        require(divUp(amount, slope) <= TWO_YEAR_WEEKS, "period too big");
         require(token.transferFrom(msg.sender, address(this), amount), "transfer failed");
 
         counter++;
@@ -43,13 +43,7 @@ contract Staking is StakingBase, StakingRestake {
     }
 
     function withdraw() external {
-        uint value = accounts[msg.sender].amount;
-        if (!stopped) {
-            uint time = roundTimestamp(block.timestamp);
-            accounts[msg.sender].locked.update(time);
-            uint bias = accounts[msg.sender].locked.initial.bias;
-            value = value.sub(bias);
-        }
+        uint value = getAvailableForWithdraw();
         if (value > 0) {
             accounts[msg.sender].amount = accounts[msg.sender].amount.sub(value);
             require(token.transfer(msg.sender, value), "transfer failed");
@@ -57,7 +51,33 @@ contract Staking is StakingBase, StakingRestake {
         emit Withdraw(msg.sender, value);
     }
 
-    function delegateTo(uint id, address newDelegate) external notStopped {
+    // Amount available for withdrawal
+    function getAvailableForWithdraw() public view returns (uint value) {
+        value = accounts[msg.sender].amount;
+        if (!stopped) {
+            uint time = roundTimestamp(block.timestamp);
+            uint bias = accounts[msg.sender].locked.actualValue(time);
+            value = value.sub(bias);
+        }
+    }
+
+    //Remaining locked amount
+    function locked() external view returns (uint) {
+        return accounts[msg.sender].amount;
+    }
+
+    //For a given Line id, the owner and delegate addresses.
+    function getAccountAndDelegate(uint id) external view returns (address account, address delegate) {
+        account = stakes[id].account;
+        delegate = stakes[id].delegate;
+    }
+
+    //Getting "current week" of the contract.
+    function getWeek() external view returns (uint) {
+        return roundTimestamp(block.timestamp);
+    }
+
+    function delegateTo(uint id, address newDelegate) external notStopped notMigrating {
         address account = verifyStakeOwner(id);
         address delegate = stakes[id].delegate;
         uint time = roundTimestamp(block.timestamp);
@@ -70,22 +90,20 @@ contract Staking is StakingBase, StakingRestake {
         emit Delegate(id, account, newDelegate, time);
     }
 
-    function totalSupply() external returns (uint) {
+    function totalSupply() external view returns (uint) {
         if ((totalSupplyLine.initial.bias == 0) || (stopped)) {
             return 0;
         }
         uint time = roundTimestamp(block.timestamp);
-        totalSupplyLine.update(time);
-        return totalSupplyLine.initial.bias;
+        return totalSupplyLine.actualValue(time);
     }
 
-    function balanceOf(address account) external returns (uint) {
+    function balanceOf(address account) external view returns (uint) {
         if ((accounts[account].balance.initial.bias == 0) || (stopped)) {
             return 0;
         }
         uint time = roundTimestamp(block.timestamp);
-        accounts[account].balance.update(time);
-        return accounts[account].balance.initial.bias;
+        return accounts[account].balance.actualValue(time);
     }
 
     function migrate(uint[] memory id) external {

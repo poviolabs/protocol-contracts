@@ -18,7 +18,7 @@ import "@rarible/lib-broken-line/contracts/LibIntMapping.sol";
 library LibBrokenLine {
     using SignedSafeMathUpgradeable for int;
     using SafeMathUpgradeable for uint;
-    using LibIntMapping for mapping (uint => int);
+    using LibIntMapping for mapping(uint => int);
 
     struct Line {
         uint start;
@@ -26,14 +26,14 @@ library LibBrokenLine {
         uint slope;
     }
 
-    struct LineData {       //all data about line
+    struct LineData {//all data about line
         Line line;
         uint cliff;
     }
 
     struct BrokenLine {
-        mapping (uint => int) slopeChanges;         //change of slope applies to the next time point
-        mapping (uint => LineData) initiatedLines;  //initiated (successfully added) Lines
+        mapping(uint => int) slopeChanges;         //change of slope applies to the next time point
+        mapping(uint => LineData) initiatedLines;  //initiated (successfully added) Lines
         Line initial;
     }
 
@@ -79,7 +79,8 @@ library LibBrokenLine {
         bias = line.bias;
         slope = line.slope;
         cliff = 0;
-        uint finishTime = line.start.add(bias.div(slope)).add(lineData.cliff);  //for information: bias.div(slope) - this`s period while slope works
+        //for information: bias.div(slope) - this`s period while slope works
+        uint finishTime = line.start.add(bias.div(slope)).add(lineData.cliff);
         if (toTime > finishTime) {
             bias = 0;
             return (bias, slope, cliff);
@@ -87,19 +88,19 @@ library LibBrokenLine {
         uint finishTimeMinusOne = finishTime.sub(1);
         int mod = safeInt(bias.mod(slope));
         uint cliffEnd = line.start.add(lineData.cliff).sub(1);
-        if (toTime <= cliffEnd) { //cliff works
+        if (toTime <= cliffEnd) {//cliff works
             cliff = cliffEnd.sub(toTime).add(1);
             //in cliff finish time compensate change slope by oldLine.slope
             brokenLine.slopeChanges.subFromItem(cliffEnd, safeInt(slope));
             //in new Line finish point use oldLine.slope
             brokenLine.slopeChanges.addToItem(finishTimeMinusOne, safeInt(slope).sub(mod));
-        } else if (toTime <= finishTimeMinusOne) { //slope works
+        } else if (toTime <= finishTimeMinusOne) {//slope works
             //now compensate change slope by oldLine.slope
             brokenLine.initial.slope = brokenLine.initial.slope.sub(slope);
             //in new Line finish point use oldLine.slope
             brokenLine.slopeChanges.addToItem(finishTimeMinusOne, safeInt(slope).sub(mod));
             bias = finishTime.sub(toTime).mul(slope).add(uint(mod));
-        } else {  //tail works
+        } else {//tail works
             //now compensate change slope by tail
             brokenLine.initial.slope = brokenLine.initial.slope.sub(uint(mod));
             bias = uint(mod);
@@ -124,7 +125,7 @@ library LibBrokenLine {
         while (time < toTime) {
             bias = bias.sub(slope);
             int newSlope = safeInt(slope).add(brokenLine.slopeChanges[time]);
-            require (newSlope >= 0, "slope < 0, something wrong with slope");
+            require(newSlope >= 0, "slope < 0, something wrong with slope");
             slope = uint(newSlope);
             brokenLine.slopeChanges[time] = 0;
             time = time.add(1);
@@ -132,6 +133,23 @@ library LibBrokenLine {
         brokenLine.initial.start = toTime;
         brokenLine.initial.bias = bias;
         brokenLine.initial.slope = slope;
+    }
+
+    function actualValue(BrokenLine storage brokenLine, uint toTime) internal view returns (uint bias) {
+        uint time = brokenLine.initial.start;
+        if (time == toTime) {
+            return (brokenLine.initial.bias);
+        }
+        bias = brokenLine.initial.bias;
+        uint slope = brokenLine.initial.slope;
+        require(toTime > time, "can't update BrokenLine for past time");
+        while (time < toTime) {
+            bias = bias.sub(slope);
+            int newSlope = safeInt(slope).add(brokenLine.slopeChanges[time]);
+            require(newSlope >= 0, "slope < 0, something wrong with slope");
+            slope = uint(newSlope);
+            time = time.add(1);
+        }
     }
 
     function safeInt(uint value) pure internal returns (int result) {

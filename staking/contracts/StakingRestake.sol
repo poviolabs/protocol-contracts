@@ -9,7 +9,7 @@ contract StakingRestake is StakingBase {
     using SafeMathUpgradeable for uint;
     using LibBrokenLine for LibBrokenLine.BrokenLine;
 
-    function restake(uint id, address newDelegate, uint newAmount, uint newSlope, uint newCliff) external notStopped returns (uint) {
+    function restake(uint id, address newDelegate, uint newAmount, uint newSlope, uint newCliff) external notStopped notMigrating returns (uint) {
         address account = verifyStakeOwner(id);
         uint time = roundTimestamp(block.timestamp);
         verification(account, id, newAmount, newSlope, newCliff, time);
@@ -36,12 +36,12 @@ contract StakingRestake is StakingBase {
     function verification(address account, uint id, uint newAmount, uint newSlope, uint newCliff, uint toTime) internal view {
         require(newAmount > 0, "zero amount");
         require(newCliff <= TWO_YEAR_WEEKS, "cliff too big");
-        uint period = newAmount.div(newSlope);
+        uint period = divUp(newAmount, newSlope);
         require(period <= TWO_YEAR_WEEKS, "slope too big");
         uint newEnd = toTime.add(newCliff).add(period);
         LibBrokenLine.LineData memory lineData = accounts[account].locked.initiatedLines[id];
         LibBrokenLine.Line memory line = lineData.line;
-        period = line.bias.div(line.slope);
+        period = divUp(line.bias, line.slope);
         uint oldEnd = line.start.add(lineData.cliff).add(period);
         require(oldEnd <= newEnd, "new line period stake too short");
         //check Line with new parameters don`t cut corner old Line
@@ -68,7 +68,8 @@ contract StakingRestake is StakingBase {
         uint amount = accounts[account].amount;
         uint balance = amount.sub(bias);
         if (addAmount > balance) {
-            uint transferAmount = addAmount.sub(balance);    //need more, than balance, so need transfer tokens to this
+            //need more, than balance, so need transfer tokens to this
+            uint transferAmount = addAmount.sub(balance);
             require(token.transferFrom(stakes[id].account, address(this), transferAmount), "transfer failed");
             accounts[account].amount = accounts[account].amount.add(transferAmount);
         }
