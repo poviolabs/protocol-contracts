@@ -4,15 +4,15 @@ pragma solidity 0.7.6;
 
 import "./interfaces/ERC1271.sol";
 import "./LibOrder.sol";
+import "./lib/LibSignature.sol";
 import "@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/cryptography/ECDSAUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/drafts/EIP712Upgradeable.sol";
 
 abstract contract OrderValidator is Initializable, ContextUpgradeable, EIP712Upgradeable {
-    using ECDSAUpgradeable for bytes32;
+    using LibSignature for bytes32;
     using AddressUpgradeable for address;
-
+    
     bytes4 constant internal MAGICVALUE = 0x1626ba7e;
 
     function __OrderValidator_init_unchained() internal initializer {
@@ -21,7 +21,11 @@ abstract contract OrderValidator is Initializable, ContextUpgradeable, EIP712Upg
 
     function validate(LibOrder.Order memory order, bytes memory signature) internal view {
         if (order.salt == 0) {
-            require(_msgSender() == order.maker, "maker is not tx sender");
+            if (order.maker != address(0)) {
+                require(_msgSender() == order.maker, "maker is not tx sender");
+            } else {
+                order.maker = _msgSender();
+            }
         } else {
             if (_msgSender() != order.maker) {
                 bytes32 hash = LibOrder.hash(order);

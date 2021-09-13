@@ -77,28 +77,28 @@
     "absolutePath": "/home/quadro/Projects/rarible/protocol-contracts/exchange-v2/contracts/ITransferManager.sol",
     "exportedSymbols": {
       "AddressUpgradeable": [
-        4483
+        4607
       ],
       "ContextUpgradeable": [
-        4528
+        4652
       ],
       "IERC1155Upgradeable": [
-        4045
+        4169
       ],
       "IERC165Upgradeable": [
-        3429
+        3553
       ],
       "IERC20TransferProxy": [
-        4544
+        4668
       ],
       "IERC20Upgradeable": [
-        4123
+        4247
       ],
       "IERC721Upgradeable": [
-        4239
+        4363
       ],
       "INftTransferProxy": [
-        4576
+        4700
       ],
       "ITransferExecutor": [
         835
@@ -107,37 +107,37 @@
         909
       ],
       "ITransferProxy": [
-        4590
+        4714
       ],
       "Initializable": [
-        3923
+        4047
       ],
       "LibAsset": [
-        4687
+        5111
       ],
       "LibFill": [
         1130
       ],
       "LibMath": [
-        2985
+        3073
       ],
       "LibOrder": [
         1301
       ],
       "LibTransfer": [
-        3010
+        3250
       ],
       "MathUpgradeable": [
-        3502
+        3626
       ],
       "OwnableUpgradeable": [
-        3141
+        3381
       ],
       "SafeMathUpgradeable": [
-        3857
+        3981
       ],
       "TransferExecutor": [
-        2750
+        2838
       ]
     },
     "id": 910,
@@ -169,7 +169,7 @@
         "id": 839,
         "nodeType": "ImportDirective",
         "scope": 910,
-        "sourceUnit": 4688,
+        "sourceUnit": 5112,
         "src": "77:51:5",
         "symbolAliases": [],
         "unitAlias": ""
@@ -191,7 +191,7 @@
         "id": 841,
         "nodeType": "ImportDirective",
         "scope": 910,
-        "sourceUnit": 2751,
+        "sourceUnit": 2839,
         "src": "153:32:5",
         "symbolAliases": [],
         "unitAlias": ""
@@ -983,17 +983,17 @@
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AssetType_$4639_memory_ptr",
+                    "typeIdentifier": "t_struct$_AssetType_$5063_memory_ptr",
                     "typeString": "struct LibAsset.AssetType"
                   },
                   "typeName": {
                     "id": 892,
                     "name": "LibAsset.AssetType",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4639,
+                    "referencedDeclaration": 5063,
                     "src": "642:18:5",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_AssetType_$4639_storage_ptr",
+                      "typeIdentifier": "t_struct$_AssetType_$5063_storage_ptr",
                       "typeString": "struct LibAsset.AssetType"
                     }
                   },
@@ -1010,17 +1010,17 @@
                   "stateVariable": false,
                   "storageLocation": "memory",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_struct$_AssetType_$4639_memory_ptr",
+                    "typeIdentifier": "t_struct$_AssetType_$5063_memory_ptr",
                     "typeString": "struct LibAsset.AssetType"
                   },
                   "typeName": {
                     "id": 894,
                     "name": "LibAsset.AssetType",
                     "nodeType": "UserDefinedTypeName",
-                    "referencedDeclaration": 4639,
+                    "referencedDeclaration": 5063,
                     "src": "687:18:5",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_struct$_AssetType_$4639_storage_ptr",
+                      "typeIdentifier": "t_struct$_AssetType_$5063_storage_ptr",
                       "typeString": "struct LibAsset.AssetType"
                     }
                   },
@@ -1187,28 +1187,28 @@
       "absolutePath": "/home/quadro/Projects/rarible/protocol-contracts/exchange-v2/contracts/ITransferManager.sol",
       "exportedSymbols": {
         "AddressUpgradeable": [
-          4483
+          4607
         ],
         "ContextUpgradeable": [
-          4528
+          4652
         ],
         "IERC1155Upgradeable": [
-          4045
+          4169
         ],
         "IERC165Upgradeable": [
-          3429
+          3553
         ],
         "IERC20TransferProxy": [
-          4544
+          4668
         ],
         "IERC20Upgradeable": [
-          4123
+          4247
         ],
         "IERC721Upgradeable": [
-          4239
+          4363
         ],
         "INftTransferProxy": [
-          4576
+          4700
         ],
         "ITransferExecutor": [
           835
@@ -1217,37 +1217,37 @@
           909
         ],
         "ITransferProxy": [
-          4590
+          4714
         ],
         "Initializable": [
-          3923
+          4047
         ],
         "LibAsset": [
-          4687
+          5111
         ],
         "LibFill": [
           1130
         ],
         "LibMath": [
-          2985
+          3073
         ],
         "LibOrder": [
           1301
         ],
         "LibTransfer": [
-          3010
+          3250
         ],
         "MathUpgradeable": [
-          3502
+          3626
         ],
         "OwnableUpgradeable": [
-          3141
+          3381
         ],
         "SafeMathUpgradeable": [
-          3857
+          3981
         ],
         "TransferExecutor": [
-          2750
+          2838
         ]
       },
       "license": "MIT"
@@ -1278,7 +1278,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 4688,
+          "SourceUnit": 5112,
           "absolutePath": "@rarible/lib-asset/contracts/LibAsset.sol",
           "file": "@rarible/lib-asset/contracts/LibAsset.sol",
           "scope": 910,
@@ -1308,7 +1308,7 @@
       },
       {
         "attributes": {
-          "SourceUnit": 2751,
+          "SourceUnit": 2839,
           "absolutePath": "/home/quadro/Projects/rarible/protocol-contracts/exchange-v2/contracts/TransferExecutor.sol",
           "file": "./TransferExecutor.sol",
           "scope": 910,
@@ -2155,7 +2155,7 @@
                       {
                         "attributes": {
                           "name": "LibAsset.AssetType",
-                          "referencedDeclaration": 4639,
+                          "referencedDeclaration": 5063,
                           "type": "struct LibAsset.AssetType"
                         },
                         "id": 892,
@@ -2182,7 +2182,7 @@
                       {
                         "attributes": {
                           "name": "LibAsset.AssetType",
-                          "referencedDeclaration": 4639,
+                          "referencedDeclaration": 5063,
                           "type": "struct LibAsset.AssetType"
                         },
                         "id": 894,
@@ -2360,7 +2360,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.0",
-  "updatedAt": "2021-06-30T15:24:13.415Z",
+  "updatedAt": "2021-09-11T03:54:46.212Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
