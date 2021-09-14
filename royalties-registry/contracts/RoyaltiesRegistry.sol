@@ -101,26 +101,26 @@ contract RoyaltiesRegistry is IRoyaltiesProvider, OwnableUpgradeable {
         } else if (IERC165Upgradeable(token).supportsInterface(LibRoyaltiesV1._INTERFACE_ID_FEES)) {
             RoyaltiesV1 v1 = RoyaltiesV1(token);
             address payable[] memory recipients;
-            try v1.getFeeRecipients(tokenId) returns (address payable[] memory result) {
-                recipients = result;
+            try v1.getFeeRecipients(tokenId) returns (address payable[] memory resultFee) {
+                recipients = resultFee;
             } catch {
                 return new LibPart.Part[](0);
             }
             uint[] memory values;
-            try v1.getFeeBps(tokenId) returns (uint[] memory result) {
-                values = result;
+            try v1.getFeeBps(tokenId) returns (uint[] memory resultBps) {
+                values = resultBps;
             } catch {
                 return new LibPart.Part[](0);
             }
             if (values.length != recipients.length) {
                 return new LibPart.Part[](0);
             }
-            LibPart.Part[] memory result = new LibPart.Part[](values.length);
+            LibPart.Part[] memory resultPart = new LibPart.Part[](values.length);
             for (uint256 i = 0; i < values.length; i++) {
-                result[i].value = uint96(values[i]);
-                result[i].account = recipients[i];
+                resultPart[i].value = uint96(values[i]);
+                resultPart[i].account = recipients[i];
             }
-            return result;
+            return resultPart;
         }
         return new LibPart.Part[](0);
     }
